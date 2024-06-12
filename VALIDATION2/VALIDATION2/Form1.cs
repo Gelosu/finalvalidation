@@ -15,10 +15,45 @@ namespace VALIDATION2
         public Form1()
         {
             InitializeComponent();
+
+        }
+
+        private void createlogs()
+        {
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+
+                    
+                    string checklogsQuery = "SHOW TABLES LIKE 'logs'";
+                    using (MySqlCommand checklogsCmd = new MySqlCommand(checklogsQuery, connection))
+                    {
+                        object result = checklogsCmd.ExecuteScalar();
+                        if (result == null)
+                        {
+                            string createlogsQuery = "CREATE TABLE logs (" +
+                                "logs VARCHAR(255) , " + "`DATETIME` DATETIME)";
+                            using (MySqlCommand createlogCmd = new MySqlCommand(createlogsQuery, connection))
+                            {
+                                createlogCmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to create tables. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            createlogs();
+
         }
         private void label2_Click(object sender, EventArgs e)
         {

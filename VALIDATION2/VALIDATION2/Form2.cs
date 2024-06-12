@@ -18,7 +18,7 @@ using static System.Windows.Forms.DataFormats;
         public Form2()
         {
             InitializeComponent();
-            InitializeFileWatcher();
+   
             Loadcourse();
 
             this.FormClosing += Form2_FormClosing;
@@ -31,18 +31,7 @@ using static System.Windows.Forms.DataFormats;
                 LogActivity("System closed");
             }
         }
-        private void InitializeFileWatcher()
-        {
-            fileWatcher = new FileSystemWatcher();
-            fileWatcher.Path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RECORDS");
-            fileWatcher.Filter = "*.csv";
-            fileWatcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.Size;
-            fileWatcher.Changed += OnChanged;
-            fileWatcher.Created += OnChanged;
-            fileWatcher.Deleted += OnChanged;
-            fileWatcher.EnableRaisingEvents = true;
-        }
-
+     
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
             Invoke(new Action(() =>
@@ -104,7 +93,7 @@ using static System.Windows.Forms.DataFormats;
                 comboBox2.SelectedIndex = 0;
             }
         }
-
+        
 
         private void facultyFilters()
         {
@@ -295,7 +284,7 @@ using static System.Windows.Forms.DataFormats;
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            createfacultyandcourse();
+            createfacultyandcourseandmasterlist();
             LoadTableNames();
             Loadcourse();
             comboBox1.SelectedIndex = 0;
@@ -307,7 +296,7 @@ using static System.Windows.Forms.DataFormats;
 
         }
 
-        private void createfacultyandcourse()
+        private void createfacultyandcourseandmasterlist()
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -323,9 +312,9 @@ using static System.Windows.Forms.DataFormats;
                         if (result == null) 
                         {
                             string createFacultyTableQuery = "CREATE TABLE faculty (" +
-                                "QRCODE VARCHAR(255) NOT NULL PRIMARY KEY, " +
-                                "NAME VARCHAR(255) NOT NULL, " +
-                                "UID VARCHAR(255) NOT NULL)";
+                                "QRCODE VARCHAR(255), " +
+                                "NAME VARCHAR(255), " +
+                                "UID VARCHAR(255))";
                             using (MySqlCommand createFacultyTableCmd = new MySqlCommand(createFacultyTableQuery, connection))
                             {
                                 createFacultyTableCmd.ExecuteNonQuery();
@@ -340,7 +329,7 @@ using static System.Windows.Forms.DataFormats;
                         if (result == null) 
                         {
                             string createCourseTableQuery = "CREATE TABLE course (" +
-                                "COURSE VARCHAR(255) NOT NULL PRIMARY KEY, " +
+                                "COURSE VARCHAR(255), " +
                                 "COURSE_DESCRIPTION VARCHAR(255), " +
                                 "STATUS VARCHAR(50))";
                             using (MySqlCommand createCourseTableCmd = new MySqlCommand(createCourseTableQuery, connection))
@@ -349,6 +338,22 @@ using static System.Windows.Forms.DataFormats;
                             }
                         }
                     }
+                    string checkmasterlistQuery = "SHOW TABLES LIKE 'masterlist'";
+                    using (MySqlCommand checkmasterlistTableCmd = new MySqlCommand(checkmasterlistQuery, connection))
+                    {
+                        object result = checkmasterlistTableCmd.ExecuteScalar();
+                        if (result == null)
+                        {
+                            string createmasterlistTableQuery = "CREATE TABLE masterlist (" +
+                         "QRCODE VARCHAR(255), " + "TUPCID VARCHAR(255), " + "UID VARCHAR(50), " + "STATUS VARCHAR(50), " + "SEMSTART VARCHAR(255), " + "`DATETIME` DATETIME)";
+
+                            using (MySqlCommand createmasterTableCmd = new MySqlCommand(createmasterlistTableQuery, connection))
+                            {
+                                createmasterTableCmd.ExecuteNonQuery();
+                            }
+                        }
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
@@ -367,20 +372,31 @@ using static System.Windows.Forms.DataFormats;
                     string filePath = openFileDialog.FileName;
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
                     string tableName = GenerateValidTableName(fileName);
-                    DataTable csvData = GetDataTableFromCSV(filePath);
-                    CreateDatabaseTable(tableName, csvData);
+                    DataTable csvData = GetDataTableFromCSV(filePath,tableName);
+
+                    
+                    if (fileName.Equals("course", StringComparison.OrdinalIgnoreCase))
+                    {
+                        tableName = "course";
+                      
+                        
+                       
+                    }
+                    else
+                    {
+                        CreateDatabaseTable(tableName, csvData);
+                    }
+
                     InsertDataIntoDatabaseTable(tableName, csvData);
                     MessageBox.Show("DATA SUCCESSFULLY UPLOADED");
 
-
+                    Loadcourse();
                     LoadTableNames();
                     if (comboBox1.Items.Contains(tableName))
                     {
                         comboBox1.SelectedItem = tableName;
                         LoadTableData(tableName);
-
                     }
-
                 }
             }
         }
@@ -423,7 +439,7 @@ using static System.Windows.Forms.DataFormats;
                 {
                     connection.Open();
 
-                    if (tableName != "faculty")
+                    if (tableName != "faculty" && tableName != "course")
                     {
                         foreach (DataRow row in table.Rows)
                         {
@@ -516,6 +532,37 @@ using static System.Windows.Forms.DataFormats;
                             }
                         }
                     }
+                    else if (tableName == "course")
+                    {
+                        foreach (DataRow row in table.Rows)
+                        {
+                            string course = row[0].ToString();
+                            string courseDesc = row[1].ToString();
+                            string status = "ENABLED";
+
+                            string checkQuery = $"SELECT COUNT(*) FROM {tableName} WHERE COURSE = @COURSE AND COURSE_DESCRIPTION = @COURSEDESC";
+                            using (MySqlCommand checkCmd = new MySqlCommand(checkQuery, connection))
+                            {
+                                checkCmd.Parameters.AddWithValue("@COURSE", course);
+                                checkCmd.Parameters.AddWithValue("@COURSEDESC", courseDesc);
+
+                                int count = Convert.ToInt32(checkCmd.ExecuteScalar());
+
+                                if (count == 0)
+                                {
+                                    string insertQuery = $"INSERT INTO {tableName} (COURSE, COURSE_DESCRIPTION, STATUS) VALUES (@COURSE, @COURSEDESC, @STATUS)";
+                                    using (MySqlCommand insertCmd = new MySqlCommand(insertQuery, connection))
+                                    {
+                                        insertCmd.Parameters.AddWithValue("@COURSE", course);
+                                        insertCmd.Parameters.AddWithValue("@COURSEDESC", courseDesc);
+                                        insertCmd.Parameters.AddWithValue("@STATUS", status);
+                                        insertCmd.ExecuteNonQuery();
+                                    }
+                                }
+                            }
+                            LogToFile($"Inserted tahle{tableName} course: {course}, Description: {courseDesc}, Status: {status}");
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -524,9 +571,28 @@ using static System.Windows.Forms.DataFormats;
             }
         }
 
+            private void LogToFile(string message)
+            {
+                string logFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "log.txt");
+
+                try
+                {
+                    using (StreamWriter writer = new StreamWriter(logFilePath, true))
+                    {
+                        writer.WriteLine($"{DateTime.Now} - {message}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to write to log file. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
 
 
-        private DataTable GetDataTableFromCSV(string filePath)
+
+
+
+        private DataTable GetDataTableFromCSV(string filePath, string tableName)
         {
             DataTable dt = new DataTable();
             int totalRowsInCSV = 0;
@@ -537,39 +603,74 @@ using static System.Windows.Forms.DataFormats;
             {
                 using (StreamReader sr = new StreamReader(filePath))
                 {
-
-                    dt.Columns.Add("QRCODE");
-                    dt.Columns.Add("TUPCID");
-                    dt.Columns.Add("UID");
-
-                    while (!sr.EndOfStream)
+                    if (tableName != "faculty" && tableName != "course")
                     {
-                        string line = sr.ReadLine();
-                        totalRowsInCSV++;
+                        dt.Columns.Add("QRCODE");
+                        dt.Columns.Add("TUPCID");
+                        dt.Columns.Add("UID");
 
-                        if (!string.IsNullOrWhiteSpace(line))
+                        while (!sr.EndOfStream)
                         {
-                            string[] rows = line.Split(',');
+                            string line = sr.ReadLine();
+                            totalRowsInCSV++;
 
-                            if (rows.Length == dt.Columns.Count)
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                DataRow dr = dt.NewRow();
-                                for (int i = 0; i < rows.Length; i++)
+                                string[] rows = line.Split(',');
+
+                                if (rows.Length == dt.Columns.Count)
                                 {
-                                    dr[i] = rows[i].Trim();
+                                    DataRow dr = dt.NewRow();
+                                    for (int i = 0; i < rows.Length; i++)
+                                    {
+                                        dr[i] = rows[i].Trim();
+                                    }
+                                    dt.Rows.Add(dr);
+                                    rowsAddedToDataTable++;
+                                    logWriter.WriteLine("Row added: " + string.Join(", ", rows));
                                 }
-                                dt.Rows.Add(dr);
-                                rowsAddedToDataTable++;
-                                logWriter.WriteLine("Row added: " + string.Join(", ", rows));
+                                else
+                                {
+                                    logWriter.WriteLine("Skipping row due to column mismatch: " + line);
+                                }
                             }
-                            else
+                        }
+                    }
+                    else if (tableName == "course")
+                    {
+                        // Adjust column count according to your CSV file for the course table
+                        dt.Columns.Add("COURSE");
+                        dt.Columns.Add("COURSE_DESCRIPTION");
+
+                        while (!sr.EndOfStream)
+                        {
+                            string line = sr.ReadLine();
+                            totalRowsInCSV++;
+
+                            if (!string.IsNullOrWhiteSpace(line))
                             {
-                                logWriter.WriteLine("Skipping row due to column mismatch: " + line);
+                                string[] rows = line.Split(',');
+
+                                // Adjust this condition to match the number of columns in your CSV for the course table
+                                if (rows.Length == dt.Columns.Count)
+                                {
+                                    DataRow dr = dt.NewRow();
+                                    for (int i = 0; i < rows.Length; i++)
+                                    {
+                                        dr[i] = rows[i].Trim();
+                                    }
+                                    dt.Rows.Add(dr);
+                                    rowsAddedToDataTable++;
+                                    logWriter.WriteLine("Row added: " + string.Join(", ", rows));
+                                }
+                                else
+                                {
+                                    logWriter.WriteLine("Skipping row due to column mismatch: " + line);
+                                }
                             }
                         }
                     }
                 }
-
 
                 logWriter.WriteLine("Total rows read from CSV: " + totalRowsInCSV);
                 logWriter.WriteLine("Total rows added to DataTable: " + rowsAddedToDataTable);
@@ -577,6 +678,7 @@ using static System.Windows.Forms.DataFormats;
 
             return dt;
         }
+
 
 
 

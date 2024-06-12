@@ -1,12 +1,12 @@
-using Microsoft.VisualBasic.Devices;
-using MySql.Data.MySqlClient;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
+    using Microsoft.VisualBasic.Devices;
+    using MySql.Data.MySqlClient;
+    using System.Data;
+    using System.Diagnostics.Eventing.Reader;
+    using System.IO;
+    using System.Text;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+    using static System.Windows.Forms.DataFormats;
 
     namespace VALIDATION2
     {
@@ -20,8 +20,25 @@ using static System.Windows.Forms.DataFormats;
             InitializeComponent();
    
             Loadcourse();
+            comboBox1.SelectedIndexChanged += ComboBox1_SelectedIndexChanged;
+            comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
 
             this.FormClosing += Form2_FormClosing;
+        }
+        private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.Items.Count > 0 && comboBox1.SelectedIndex == -1)
+            {
+                comboBox1.SelectedIndex = 0;
+            }
+        }
+
+        private void ComboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox2.Items.Count > 0 && comboBox2.SelectedIndex == -1)
+            {
+                comboBox2.SelectedIndex = 0;
+            }
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
@@ -87,6 +104,7 @@ using static System.Windows.Forms.DataFormats;
             string tableName = comboBox1.SelectedItem.ToString();
             LoadTableData(tableName);
 
+            
 
             if (tableName != "faculty")
             {
@@ -396,13 +414,25 @@ using static System.Windows.Forms.DataFormats;
 
                     InsertDataIntoDatabaseTable(tableName, csvData);
                     MessageBox.Show("DATA SUCCESSFULLY UPLOADED");
+                    comboBox2.SelectedIndex = 0;
+                    comboBox1.SelectedIndex = 0;
 
-                    Loadcourse();
                     LoadTableNames();
                     if (comboBox1.Items.Contains(tableName))
                     {
                         comboBox1.SelectedItem = tableName;
                         LoadTableData(tableName);
+                    }
+
+                    Loadcourse();
+                    if (comboBox1.Items.Count > 0)
+                    {
+                        comboBox1.SelectedIndex = 0;
+                    }
+
+                    if (comboBox2.Items.Count > 0)
+                    {
+                        comboBox2.SelectedIndex = 0;
                     }
                 }
             }

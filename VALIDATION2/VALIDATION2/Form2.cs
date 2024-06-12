@@ -1,10 +1,10 @@
-﻿    using Microsoft.VisualBasic.Devices;
-    using MySql.Data.MySqlClient;
-    using System.Data;
+using Microsoft.VisualBasic.Devices;
+using MySql.Data.MySqlClient;
+using System.Data;
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Text;
-    using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using static System.Windows.Forms.DataFormats;
 
@@ -372,15 +372,22 @@ using static System.Windows.Forms.DataFormats;
                     string filePath = openFileDialog.FileName;
                     string fileName = Path.GetFileNameWithoutExtension(filePath);
                     string tableName = GenerateValidTableName(fileName);
-                    DataTable csvData = GetDataTableFromCSV(filePath,tableName);
+                    DataTable csvData = GetDataTableFromCSV(filePath, tableName);
 
-                    
+
                     if (fileName.Equals("course", StringComparison.OrdinalIgnoreCase))
                     {
                         tableName = "course";
                       
                         
                        
+                    }
+                    if (fileName.Equals("faculty", StringComparison.OrdinalIgnoreCase))
+                    {
+                        tableName = "faculty";
+
+
+
                     }
                     else
                     {
@@ -638,7 +645,6 @@ using static System.Windows.Forms.DataFormats;
                     }
                     else if (tableName == "course")
                     {
-                        // Adjust column count according to your CSV file for the course table
                         dt.Columns.Add("COURSE");
                         dt.Columns.Add("COURSE_DESCRIPTION");
 
@@ -651,7 +657,6 @@ using static System.Windows.Forms.DataFormats;
                             {
                                 string[] rows = line.Split(',');
 
-                                // Adjust this condition to match the number of columns in your CSV for the course table
                                 if (rows.Length == dt.Columns.Count)
                                 {
                                     DataRow dr = dt.NewRow();
@@ -670,10 +675,43 @@ using static System.Windows.Forms.DataFormats;
                             }
                         }
                     }
-                }
+                    else if (tableName == "faculty")
+                    {
+                        dt.Columns.Add("QRCODE");
+                        dt.Columns.Add("NAME");
+                        dt.Columns.Add("UID");
 
-                logWriter.WriteLine("Total rows read from CSV: " + totalRowsInCSV);
-                logWriter.WriteLine("Total rows added to DataTable: " + rowsAddedToDataTable);
+                        while (!sr.EndOfStream)
+                        {
+                            string line = sr.ReadLine();
+                            totalRowsInCSV++;
+
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                string[] rows = line.Split(',');
+
+                                if (rows.Length == dt.Columns.Count)
+                                {
+                                    DataRow dr = dt.NewRow();
+                                    for (int i = 0; i < rows.Length; i++)
+                                    {
+                                        dr[i] = rows[i].Trim();
+                                    }
+                                    dt.Rows.Add(dr);
+                                    rowsAddedToDataTable++;
+                                    logWriter.WriteLine("Row added: " + string.Join(", ", rows));
+                                }
+                                else
+                                {
+                                    logWriter.WriteLine("Skipping row due to column mismatch: " + line);
+                                }
+                            }
+                        }
+                    }
+
+                    logWriter.WriteLine("Total rows read from CSV: " + totalRowsInCSV);
+                    logWriter.WriteLine("Total rows added to DataTable: " + rowsAddedToDataTable);
+                }
             }
 
             return dt;

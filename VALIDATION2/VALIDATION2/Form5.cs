@@ -13,15 +13,49 @@ namespace VALIDATION2
         public Form5()
         {
             InitializeComponent();
+            this.FormClosing += Form5_FormClosing;
         }
 
         private void Form5_Load(object sender, EventArgs e)
         {
             LoadLogs();
             LoadDates();
+            LogActivity("Logs Loaded");
         }
 
-        private void LoadLogs(string filter = "", string dateFilter = "")
+        private void Form5_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            LogActivity("System closed"); 
+        }
+
+        private void LogActivity(string message)
+        {
+            string logQuery = "INSERT INTO logs (logs, datetime) VALUES (@log, @datetime)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(logQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@log", message);
+                        cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to log activity. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+    
+
+
+
+private void LoadLogs(string filter = "", string dateFilter = "")
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
@@ -70,6 +104,7 @@ namespace VALIDATION2
                     {
                         dataGridView1.Columns["DATE AND TIME"].HeaderText = "DATE AND TIME";
                     }
+                  
                 }
                 catch (Exception ex)
                 {

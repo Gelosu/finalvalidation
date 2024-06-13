@@ -111,7 +111,10 @@
             Controls.Add(label3);
             Controls.Add(label2);
             Controls.Add(label1);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form7";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";
             Load += Form7_Load;
             ResumeLayout(false);

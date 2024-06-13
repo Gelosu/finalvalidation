@@ -217,6 +217,8 @@
             Controls.Add(button1);
             Controls.Add(textBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form4";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";

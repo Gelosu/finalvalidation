@@ -28,8 +28,10 @@ namespace VALIDATION2
             originalCourseDescription = courseDescription;
             textBox1.Text = course;
             textBox2.Text = courseDescription;
+            
         }
 
+      
         private void label1_Click(object sender, EventArgs e)
         {
 
@@ -79,6 +81,7 @@ namespace VALIDATION2
                     }
 
                     MessageBox.Show("Course updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LogActivity($"Course Updated: {updatedCourse}");
                     this.Close();
                 }
                 catch (Exception ex)
@@ -95,6 +98,28 @@ namespace VALIDATION2
         private void Form7_Load(object sender, EventArgs e)
         {
 
+        }
+        private void LogActivity(string message)
+        {
+            string logQuery = "INSERT INTO logs (logs, datetime) VALUES (@log, @datetime)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(logQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@log", message);
+                        cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to log activity. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

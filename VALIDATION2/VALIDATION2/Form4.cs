@@ -21,7 +21,7 @@ namespace VALIDATION2
         {
             InitializeComponent();
             LoadCourses();
-            this.FormClosed += Form4_FormClosed;
+           
         }
 
         private void LoadCourses()
@@ -108,6 +108,9 @@ namespace VALIDATION2
             Form6 form6 = new Form6();
             form6.Show();
             form6.Form6Closed += Form6_Form6Closed;
+
+            LogActivity("Add course form loaded");
+
         }
         private void Form6_Form6Closed(object sender, EventArgs e)
         {
@@ -133,6 +136,7 @@ namespace VALIDATION2
 
 
                 LoadCourses();
+                LogActivity("Update form loaded");
             }
             else
             {
@@ -225,7 +229,7 @@ namespace VALIDATION2
             DialogResult result = MessageBox.Show("Are you sure you want to delete the selected course?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (result == DialogResult.Yes)
             {
-
+                
                 using (MySqlConnection connection = new MySqlConnection(connectionString))
                 {
                     string queryDelete = "DELETE FROM COURSE WHERE COURSE = @course AND COURSE_DESCRIPTION = @courseDescription AND STATUS = @status";
@@ -243,12 +247,14 @@ namespace VALIDATION2
                             int rowsAffected = commandDelete.ExecuteNonQuery();
                             if (rowsAffected > 0)
                             {
+                                LogActivity($"Selected course deleted: {course}");
                                 MessageBox.Show("Course deleted successfully.");
                                 LoadCourses();
                             }
                             else
                             {
                                 MessageBox.Show("Failed to delete course.");
+                                LogActivity($"Failed to delete course: {course}");
                             }
                         }
                     }
@@ -301,9 +307,29 @@ namespace VALIDATION2
         {
 
         }
-        private void Form4_FormClosed(object sender, FormClosedEventArgs e)
+      
+        private void LogActivity(string message)
         {
-            Form4Closed?.Invoke(this, EventArgs.Empty);
+            string logQuery = "INSERT INTO logs (logs, datetime) VALUES (@log, @datetime)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(logQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@log", message);
+                        cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to log activity. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
+
     }
 }

@@ -1,16 +1,12 @@
-Row added: BSCE, Bachelor of Science Major in Civil Engineering
-Row added: BSEE, Bachelor of Science Major in Electrical Engineering
-Row added: BSME, Bacherlor of Science Major in Mechanical Engineering
-Row added: BSIE-HE, Bachelor of Science in Industrial Education Major in Home Economics
-Row added: BTVTED-CP, Bachelor of Technical Vocational Teacher Education Major in Computer Programming
-Row added: BTVTED-EL, Bachelor of Technical Vocational Teacher Education Major in Electrical Technology
-Row added: BET-COET, Bachelor of Engineering Technology Major in Computer Engineering Technology
-Row added: BET-PPT, Bachelor of Engineering Technology Mechanical Engineering Technology track: Power Plant Technology
-Row added: BET-MT, Bachelor of Engineering Technology Major in Mechanical Technology
-Row added: BET-AT, Bachelor of Engineering Technology Mechanical Engineering Technology track: Automotive Technology
-Row added: BET-ESET, Bachelor of Engineering Technology Major in Electronics Technology
-Row added: BET-CT, Bachelor of Engineering Technology Major in Civil Engineering Technology
-Row added: BET-ET, Bachelor of Engineering Technology Major in Electrical Technology
-Row added: BSIE-ICT, Bachelor of Science in Industrial Education Major in Information and Communication Technology
-Total rows read from CSV: 14
-Total rows added to DataTable: 14
+Row added: TUPC-20-0119BEREDOCHRISTIANBET-COET2653, TUPC-20-0119, 2653
+Row added: TUPC-20-0148DUMAOPCHRISTIANBET-COET2675, TUPC-20-0148, 2675
+Row added: TUPC-20-0151EVANGELISTAGIENBET-COET2678, TUPC-20-0151, 2678
+Row added: TUPC-18-0229 DOROIN R BET-COET-C   5227, TUPC-18-0229, 5227
+Row added: TUPC-20-0177 PETILLA CHRISBET-COET 2703, TUPC-20-0177, 2703
+Row added: TUPC-19-2703CASTROCHRISTINEBET-COET2639, TUPC-19-2703, 2639
+Row added: TUPC-21-0652 BACHILLER ROMA BSIE-HE3234, TUPC-21-0652, 3234
+Row added: TUPC-21-0651 DIAMSEN JONALYN BSIEHE3742, TUPC-21-0651, 3742
+Row added: TUPC-21-0898 MARFIL CLARISSE BSIEHE3364, TUPC-21-0898, 3364
+Row added: TUPC-21-0138 CASTRONUEVO C BET-COET3256, TUPC-21-0138, 3256
+Total rows read from CSV: 10
+Total rows added to DataTable: 10

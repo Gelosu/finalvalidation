@@ -71,6 +71,8 @@
             Controls.Add(comboBox1);
             Controls.Add(textBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form5";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";

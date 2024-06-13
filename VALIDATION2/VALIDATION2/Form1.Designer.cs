@@ -110,6 +110,8 @@
             Font = new Font("Courier New", 12F, FontStyle.Bold);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Margin = new Padding(4, 2, 4, 2);
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";

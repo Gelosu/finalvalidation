@@ -24,6 +24,7 @@ namespace VALIDATION2
         {
             Form6Closed?.Invoke(this, EventArgs.Empty);
         }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string course = textBox1.Text;
@@ -35,7 +36,7 @@ namespace VALIDATION2
                 return;
             }
 
-           
+
             using (MySqlConnection connection = new MySqlConnection(connectionString))
             {
                 string queryCheck = "SELECT COUNT(*) FROM course WHERE COURSE = @course OR COURSE_DESCRIPTION = @courseDescription";
@@ -45,7 +46,7 @@ namespace VALIDATION2
                 {
                     connection.Open();
 
-                   
+
                     using (MySqlCommand commandCheck = new MySqlCommand(queryCheck, connection))
                     {
                         commandCheck.Parameters.AddWithValue("@course", course);
@@ -60,7 +61,7 @@ namespace VALIDATION2
                         }
                     }
 
-                    
+
                     using (MySqlCommand commandInsert = new MySqlCommand(queryInsert, connection))
                     {
                         commandInsert.Parameters.AddWithValue("@course", course);
@@ -70,10 +71,13 @@ namespace VALIDATION2
                         if (rowsAffected > 0)
                         {
                             MessageBox.Show("Course added successfully.");
+                            LogActivity($"Course added: {course} ");
+
                         }
                         else
                         {
                             MessageBox.Show("Failed to add course.");
+                            LogActivity($"Course failed to add: {course} ");
                         }
                     }
                 }
@@ -105,6 +109,33 @@ namespace VALIDATION2
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+        private void LogActivity(string message)
+        {
+            string logQuery = "INSERT INTO logs (logs, datetime) VALUES (@log, @datetime)";
+
+            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    using (MySqlCommand cmd = new MySqlCommand(logQuery, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@log", message);
+                        cmd.Parameters.AddWithValue("@datetime", DateTime.Now);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to log activity. Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+        private void Form6_Load(object sender, EventArgs e)
         {
 
         }

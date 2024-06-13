@@ -133,6 +133,8 @@
             Controls.Add(button1);
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form3";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";

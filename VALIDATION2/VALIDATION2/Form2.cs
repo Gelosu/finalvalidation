@@ -1,4 +1,4 @@
-    using Microsoft.VisualBasic.Devices;
+﻿    using Microsoft.VisualBasic.Devices;
     using MySql.Data.MySqlClient;
     using System.Data;
     using System.Diagnostics.Eventing.Reader;
@@ -24,6 +24,7 @@
             comboBox2.SelectedIndexChanged += ComboBox2_SelectedIndexChanged;
 
             this.FormClosing += Form2_FormClosing;
+
         }
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -795,6 +796,7 @@
         private void button5_Click(object sender, EventArgs e)
         {
             refresh();
+            LogActivity("Data in table reload ");
         }
         private void refresh()
         {
@@ -840,6 +842,7 @@
             Form3 form3 = new Form3();
             form3.Form3Closed += Form3_Form3Closed;
             form3.ShowDialog();
+            LogActivity("New Semester loaded");
 
         }
         private void LogActivity(string message)
@@ -895,12 +898,15 @@
             Form4 form4 = new Form4();
             form4.Show();
             form4.Form4Closed += Form4_Form4Closed;
+            LogActivity("Course Management loaded");
         }
 
         private void button4_Click(object sender, EventArgs e)
-        {
+        {   
+
             Form5 form5 = new Form5();
             form5.Show();
+            LogActivity("Logs loaded");
         }
 
         private void label2_Click(object sender, EventArgs e)

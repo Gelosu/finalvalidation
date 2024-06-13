@@ -117,9 +117,12 @@
             Controls.Add(textBox1);
             Controls.Add(label1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form6";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";
+            Load += Form6_Load;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -15,9 +15,16 @@ namespace VALIDATION2
         public Form1()
         {
             InitializeComponent();
+            this.FormClosing += Form1_FormClosing;
 
         }
-
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                LogActivity("System closed");
+            }
+        }
         private void createlogs()
         {
             using (MySqlConnection connection = new MySqlConnection(connectionString))

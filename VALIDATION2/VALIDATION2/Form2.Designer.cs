@@ -46,7 +46,7 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(480, 55);
+            textBox1.Location = new Point(693, 54);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(177, 23);
             textBox1.TabIndex = 0;
@@ -81,13 +81,17 @@
             // 
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.AllowUserToDeleteRows = false;
+            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             dataGridView1.BackgroundColor = Color.White;
             dataGridView1.BorderStyle = BorderStyle.Fixed3D;
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(38, 142);
+            dataGridView1.Location = new Point(39, 146);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.ReadOnly = true;
-            dataGridView1.Size = new Size(618, 280);
+            dataGridView1.RowHeadersVisible = false;
+            dataGridView1.RowHeadersWidth = 95;
+            dataGridView1.Size = new Size(830, 374);
             dataGridView1.TabIndex = 5;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
@@ -96,7 +100,7 @@
             button2.BackColor = Color.Black;
             button2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button2.ForeColor = Color.White;
-            button2.Location = new Point(582, 12);
+            button2.Location = new Point(795, 11);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 6;
@@ -109,9 +113,9 @@
             button3.BackColor = Color.FromArgb(30, 30, 30);
             button3.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button3.ForeColor = Color.White;
-            button3.Location = new Point(274, 428);
+            button3.Location = new Point(434, 539);
             button3.Name = "button3";
-            button3.Size = new Size(151, 32);
+            button3.Size = new Size(222, 39);
             button3.TabIndex = 7;
             button3.Text = "New Semester";
             button3.UseVisualStyleBackColor = false;
@@ -122,9 +126,9 @@
             button4.BackColor = Color.FromArgb(30, 30, 30);
             button4.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button4.ForeColor = Color.White;
-            button4.Location = new Point(193, 428);
+            button4.Location = new Point(274, 539);
             button4.Name = "button4";
-            button4.Size = new Size(75, 32);
+            button4.Size = new Size(146, 39);
             button4.TabIndex = 8;
             button4.Text = "Logs";
             button4.UseVisualStyleBackColor = false;
@@ -135,7 +139,7 @@
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = Color.White;
-            label1.Location = new Point(297, 58);
+            label1.Location = new Point(510, 57);
             label1.Name = "label1";
             label1.Size = new Size(48, 15);
             label1.TabIndex = 9;
@@ -146,7 +150,7 @@
             comboBox2.BackColor = Color.White;
             comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
             comboBox2.FormattingEnabled = true;
-            comboBox2.Location = new Point(351, 54);
+            comboBox2.Location = new Point(564, 53);
             comboBox2.Name = "comboBox2";
             comboBox2.Size = new Size(123, 23);
             comboBox2.TabIndex = 10;
@@ -169,7 +173,7 @@
             // 
             label2.AutoSize = true;
             label2.ForeColor = Color.White;
-            label2.Location = new Point(504, 112);
+            label2.Location = new Point(717, 111);
             label2.Name = "label2";
             label2.Size = new Size(68, 15);
             label2.TabIndex = 12;
@@ -179,7 +183,7 @@
             // textBox2
             // 
             textBox2.BackColor = Color.White;
-            textBox2.Location = new Point(578, 109);
+            textBox2.Location = new Point(791, 108);
             textBox2.Name = "textBox2";
             textBox2.ReadOnly = true;
             textBox2.Size = new Size(78, 23);
@@ -191,9 +195,9 @@
             button6.BackColor = Color.FromArgb(30, 30, 30);
             button6.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             button6.ForeColor = Color.White;
-            button6.Location = new Point(39, 428);
+            button6.Location = new Point(39, 539);
             button6.Name = "button6";
-            button6.Size = new Size(148, 32);
+            button6.Size = new Size(219, 39);
             button6.TabIndex = 14;
             button6.Text = "Course Management";
             button6.UseVisualStyleBackColor = false;
@@ -204,7 +208,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(51, 51, 51);
-            ClientSize = new Size(691, 477);
+            ClientSize = new Size(903, 607);
             Controls.Add(button6);
             Controls.Add(textBox2);
             Controls.Add(label2);
@@ -219,6 +223,8 @@
             Controls.Add(comboBox1);
             Controls.Add(textBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "Form2";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "VALIDATION";

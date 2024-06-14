@@ -1,4 +1,4 @@
-﻿using MySql.Data.MySqlClient;
+using MySql.Data.MySqlClient;
 using System;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -14,14 +14,17 @@ namespace VALIDATION2
         public Form3()
         {
             InitializeComponent();
-            
+            this.FormClosed += Form3_FormClosed;
         }
 
-     
+        private void Form3_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            LogActivity("System closed");
+            Form3Closed?.Invoke(this, EventArgs.Empty);
+        }
 
         private void Form3_Load(object sender, EventArgs e)
         {
-            
             CheckEnableButton();
         }
 
@@ -59,12 +62,10 @@ namespace VALIDATION2
                         return;
                     }
 
-                    string lastTableName = GetLastTableName(connection);
-
-                    CreateNewTable(newTableName, lastTableName, connection);
+                    CreateNewTable(newTableName, connection);
 
                     MessageBox.Show($"To update the status, please upload this filename: {inputTableName}");
-                    LogActivity($"Creating of new semester successfully table name: {inputTableName}");
+                    LogActivity($"Creating of new semester successful: table name: {inputTableName}");
                 }
                 catch (Exception ex)
                 {
@@ -87,20 +88,9 @@ namespace VALIDATION2
             }
         }
 
-        private string GetLastTableName(MySqlConnection connection)
+        private void CreateNewTable(string newTableName, MySqlConnection connection)
         {
-            string query = "SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_SCHEMA = 'validationfile' AND TABLE_NAME NOT IN ('credentials', 'logs', 'faculty', 'course') ORDER BY CREATE_TIME DESC LIMIT 1";
-
-            using (MySqlCommand command = new MySqlCommand(query, connection))
-            {
-                object result = command.ExecuteScalar();
-                return result?.ToString();
-            }
-        }
-
-        private void CreateNewTable(string newTableName, string sourceTableName, MySqlConnection connection)
-        {
-            string query = $"CREATE TABLE `{newTableName}` LIKE `{sourceTableName}`";
+            string query = $"CREATE TABLE `{newTableName}` (QRCODE VARCHAR(255), TUPCID VARCHAR(255), UID VARCHAR(255), STATUS VARCHAR(255), DATETIME DATETIME)";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.ExecuteNonQuery();
@@ -124,12 +114,12 @@ namespace VALIDATION2
 
         private void CheckEnableButton()
         {
-          
             bool isTextBoxFilled = !string.IsNullOrEmpty(textBox2.Text);
             bool isRadioButtonChecked = radioButton1.Checked || radioButton2.Checked;
 
             button1.Enabled = isTextBoxFilled && isRadioButtonChecked;
         }
+
         private void LogActivity(string message)
         {
             string logQuery = "INSERT INTO logs (logs, datetime) VALUES (@log, @datetime)";
